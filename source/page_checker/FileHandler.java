@@ -36,7 +36,6 @@ public class FileHandler {
                 }                
                 i++;
             }
-            System.out.println(listRequests.isEmpty());
             // close files
             bufferedReader.close();
             log.writeToLog(
