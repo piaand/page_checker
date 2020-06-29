@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
 
 public class Log {
     String logName;
@@ -36,6 +38,7 @@ public class Log {
         
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(getLogName(), true));
+                writer.write(getTimeString() + "    ");
                 writer.write(content);
                 writer.newLine();
                 writer.flush();
@@ -44,7 +47,24 @@ public class Log {
                 System.out.println("Error: error writing to logfile.");
                 e.printStackTrace();
             }
-      
+        }
+        
+        public long measureTime(Long start, String url) throws Exception {
+            try {
+                long stop = System.nanoTime();
+                long nanos = stop - start;
+                return nanos;
+            } catch (Exception e) {
+                System.out.println("Error: error with measuring time");
+                throw e;
+            }
+        }
+        
+        public String getTimeString() {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+            LocalDateTime now = LocalDateTime.now();
+            String timestamp = dtf.format(now).toString();
+            return (timestamp);
         }
     
 }

@@ -20,6 +20,7 @@ public class Main {
                     FileHandler handler = new FileHandler(fileName);
                     ArrayList<RequestHTTP> listRequests = handler.readConfigFile(log);
                     for (RequestHTTP request : listRequests) {
+                        Long start = System.nanoTime();
                         content = request.doRequests(log);
                         if (content != null) {
                             if (!(request.getRules().isEmpty())) {
@@ -29,6 +30,9 @@ public class Main {
                                     "Url " + request.getUrl() + " has no rules to check.");
                             }
                         }
+                        long duration = log.measureTime(start, request.getUrl());
+                        double seconds = (double) duration/1000000000;
+                        log.writeToLog(duration+" nanoseconds or "+seconds+" seconds to request for "+request.getUrl());
                     }
                     
                     log.writeToLog(
