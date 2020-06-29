@@ -59,17 +59,21 @@ FROM debian:stretch-slim
 
 ENV JAVA_HOME=/opt/java-minimal
 ENV PATH="$PATH:$JAVA_HOME/bin"
-ENV SRC="/src"
+ENV SRC="src/"
 ENV FILES="$SRC/page_checker"
+ENV CYCLE="1"
 COPY --from=packager "$JAVA_HOME" "$JAVA_HOME"
 
 # Copy the source files in the container environment
 COPY "/source" "$SRC"
 
 # compile the java files in parcel_tracking directory
-#WORKDIR "$FILES"
-#RUN javac Main.java
+WORKDIR "$SRC"
+RUN javac -classpath . page_checker/Main.java \
+    page_checker/FileHandler.java \
+    page_checker/RequestHTTP.java \
+    page_checker/Rule.java \
+    page_checker/Log.java \
+    page_checker/PageChecker.java
 
-#WORKDIR "$SRC"
-ENTRYPOINT /bin/bash
-#ENTRYPOINT java -classpath page_checker.Main
+ENTRYPOINT java page_checker.Main "$CYCLE"
