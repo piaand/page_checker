@@ -3,14 +3,24 @@ package page_checker;
 import java.util.*;
 
 public class Rule {
-	String description;
+	String body;
+        String category;
     
-    public Rule(String descriotion) {
-	this.description = description;
+    public Rule(String category, String body) {
+	this.body = body;
+        this.category = category;
     }
     
-    public String getDescription() {
-        return (this.description);
+    public String getBody() {
+        return (this.body);
+    }
+    
+    public String getCategory() {
+        return (this.category);
+    }
+    
+    public void mapRules() {
+        //decide which rules to check according to category.
     }
     
 }
