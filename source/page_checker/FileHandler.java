@@ -15,33 +15,41 @@ public class FileHandler {
         return (this.fileName);
     }
     
-    public void readConfigFile() throws Exception {
+    public ArrayList<RequestHTTP> readConfigFile(Log log) throws Exception {
         try  {
             String line;
+            int i;
+            
             File file = new File(getFileName()); 
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             ArrayList<RequestHTTP> listRequests = new ArrayList<RequestHTTP>();
+
+            i = 0;
             while((line = bufferedReader.readLine()) != null) {
                 try {
                     RequestHTTP request = extractRequest(line);
                     listRequests.add(request);
                 } catch(Exception e) {
-                    System.out.println(
-                    "Error extracting exceptions");
+                    log.writeToLog(
+                        "Error extracting requests at line " + i);
                 }                
-                
+                i++;
             }
-            System.out.println("ended reading all the lines");
-            // close files.
+            System.out.println(listRequests.isEmpty());
+            // close files
             bufferedReader.close();
-
-            } catch(FileNotFoundException e) {
-                System.out.println("Unable to open file '" + fileName + "'");                
-            } catch(IOException e) {
-                System.out.println(
-                    "Error reading file '" + fileName + "'");                  
-            }
+            log.writeToLog(
+                        "Read all the pages and rules");
+            return (listRequests);
+        } catch(FileNotFoundException e) {
+            System.out.println("Unable to open file '" + fileName + "'");
+            throw e;
+        } catch(IOException e) {
+            System.out.println(
+                "Error reading file '" + fileName + "'");
+            throw e;
+        }
     }
     
     public RequestHTTP extractRequest(String line) {

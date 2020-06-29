@@ -17,7 +17,7 @@ public class Main {
                     Log log = new Log(logName);
                     log.startLog();
                     FileHandler handler = new FileHandler(fileName);
-                    handler.readConfigFile();
+                    handler.readConfigFile(log);
                 }
             } catch (Exception e) {
                 System.out.println(errorClose);
