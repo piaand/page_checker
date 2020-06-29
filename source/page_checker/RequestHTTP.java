@@ -18,6 +18,10 @@ public class RequestHTTP {
         return (this.url);
     }
     
+    public ArrayList<Rule> getRules() {
+        return (this.rules);
+    }
+    
     public void setConnection(HttpURLConnection con, Log log) throws IOException {
         try {
             con.setRequestMethod("GET");
@@ -25,8 +29,6 @@ public class RequestHTTP {
             con.setConnectTimeout(5000);
             con.setReadTimeout(5000);
         } catch (IOException e) {
-            log.writeToLog(
-                    "Error: Setting connection to " + getUrl() + " failed.");
             con.disconnect();
             throw e;
         }
@@ -45,14 +47,12 @@ public class RequestHTTP {
             String result = content.toString();
             return (result);
         } catch (IOException e) {
-            log.writeToLog(
-                    "Error: Reading response content from " + getUrl() + " failed.");
             con.disconnect();
             throw e;
         }
     }
     
-    public void doRequests(Log log) throws Exception {
+    public String doRequests(Log log) throws Exception {
         try {
             URL url = new URL(getUrl());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -60,13 +60,34 @@ public class RequestHTTP {
             int status = con.getResponseCode();
             System.out.println(status + "code from response");
             String content = readResponse(con, log);
-            System.out.println(content);
+            con.disconnect();
+            return (content);
         } catch (Exception e){
             String errorName = e.getClass().getSimpleName();
             log.writeToLog(
                     "Error: making request failed with url " + getUrl() + " due to " + errorName);
             e.printStackTrace();
+            return null;
         } 
-   
+    }
+    
+    public void checkRules(String content, Log log) throws Exception {
+        try {
+            ArrayList<Rule> listRules = getRules();
+            boolean passed = true; 
+
+            for (Rule rule : listRules) {
+                //check rule category
+                //check category requirements
+                //passed = false if faile a test
+            }
+
+            if (passed) {
+                log.writeToLog(
+                    "All requirements passed with url " + getUrl());
+            }
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

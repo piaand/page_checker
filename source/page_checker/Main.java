@@ -14,19 +14,27 @@ public class Main {
                 if (args.length != 1) {
                     printInstructions();
                 } else {
+                    String content;
                     Log log = new Log(logName);
                     log.startLog();
                     FileHandler handler = new FileHandler(fileName);
                     ArrayList<RequestHTTP> listRequests = handler.readConfigFile(log);
                     for (RequestHTTP request : listRequests) {
-                        request.doRequests(log);
+                        content = request.doRequests(log);
+                        if (content != null) {
+                            if (!(request.getRules().isEmpty())) {
+                                request.checkRules(content, log);
+                            } else {
+                                log.writeToLog(
+                                    "Url " + request.getUrl() + " has no rules to check.");
+                            }
+                        }
                     }
                     
                     log.writeToLog(
                         "Ended request testing");
                 }
             } catch (Exception e) {
-                System.out.println(errorClose);
                 throw e;
             }
         }
