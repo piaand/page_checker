@@ -17,7 +17,13 @@ public class Main {
                     Log log = new Log(logName);
                     log.startLog();
                     FileHandler handler = new FileHandler(fileName);
-                    handler.readConfigFile(log);
+                    ArrayList<RequestHTTP> listRequests = handler.readConfigFile(log);
+                    for (RequestHTTP request : listRequests) {
+                        request.doRequests(log);
+                    }
+                    
+                    log.writeToLog(
+                        "Ended request testing");
                 }
             } catch (Exception e) {
                 System.out.println(errorClose);
