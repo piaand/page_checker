@@ -26,8 +26,8 @@ public class RequestHTTP {
         try {
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", "plain/text");
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
+            con.setConnectTimeout(7000);
+            con.setReadTimeout(7000);
         } catch (IOException e) {
             con.disconnect();
             throw e;
@@ -58,17 +58,31 @@ public class RequestHTTP {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             setConnection(con, log);
             int status = con.getResponseCode();
-            System.out.println(status + "code from response");
-            String content = readResponse(con, log);
-            con.disconnect();
-            return (content);
+            
+            if (status > 299) {
+                handleStatusNotOK(status, log);
+                return (null);
+            } else {
+                String content = readResponse(con, log);
+                con.disconnect();
+                return (content);
+            }
         } catch (Exception e){
             String errorName = e.getClass().getSimpleName();
             log.writeToLog(
                     "Error: making request failed with url " + getUrl() + " due to " + errorName);
             e.printStackTrace();
-            return null;
+            return (null);
         } 
+    }
+    
+    public void handleStatusNotOK(int status, Log log) throws Exception {
+        try {
+            log.writeToLog(
+            "Request response was not from Success family. Status code: " + status);
+        } catch (Exception e) {
+            throw e;
+        }
     }
     
     public void checkRules(String content, Log log) throws Exception {
@@ -79,7 +93,7 @@ public class RequestHTTP {
             for (Rule rule : listRules) {
                 //check rule category
                 //check category requirements
-                //passed = false if faile a test
+                //passed = false if failed a test
             }
 
             if (passed) {
